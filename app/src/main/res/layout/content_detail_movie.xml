@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/activity_detail_movie">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/default_padding">
+
+        <TextView
+            android:id="@+id/text_voteAverage"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@drawable/ic_star"
+            android:gravity="center"
+            android:paddingTop="2dp"
+            android:textStyle="bold"
+            android:textSize="15dp"
+            tools:text="8.9" />
+
+        <TextView
+            android:id="@+id/text_releaseDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignBottom="@+id/text_voteAverage"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="16sp"
+            tools:text="22/10/2017"/>
+
+        <TextView
+            android:id="@+id/text_overview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/text_voteAverage"
+            android:layout_marginTop="@dimen/default_margin"
+            android:textSize="20sp"
+            android:lineSpacingExtra="1dp"
+            tools:text="Thor is imprisoned on the other side of the universe and finds himself in a race against time to get back to Asgard to stop Ragnarok, the prophecy of destruction to his homeworld and the end of Asgardian civilization, at the hands of an all-powerful new threat, the ruthless Hela."/>
+
+    </RelativeLayout>
+
+</androidx.core.widget.NestedScrollView>

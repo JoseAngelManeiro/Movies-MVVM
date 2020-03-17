@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="default_margin">16dp</dimen>
+    <dimen name="default_padding">16dp</dimen>
+    <dimen name="item_margin">3dp</dimen>
+    <dimen name="column_width">120dp</dimen>
+    <dimen name="item_height">200dp</dimen>
+    <dimen name="app_bar_height">280dp</dimen>
+
+</resources>
