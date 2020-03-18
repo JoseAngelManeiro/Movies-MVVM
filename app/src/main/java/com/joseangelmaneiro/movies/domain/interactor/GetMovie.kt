@@ -8,14 +8,15 @@ import io.reactivex.Single
 
 
 class GetMovie(
-    private val repository: MoviesRepository,
-    uiScheduler: UIScheduler,
-    jobScheduler: JobScheduler): UseCase<Movie, GetMovie.Params>(uiScheduler, jobScheduler) {
+  private val repository: MoviesRepository,
+  uiScheduler: UIScheduler,
+  jobScheduler: JobScheduler
+) : UseCase<Movie, GetMovie.Params>(uiScheduler, jobScheduler) {
 
-    override fun buildUseCaseObservable(params: Params): Single<Movie> {
-        return Single.just(repository.getMovie(params.movieId))
-    }
+  override fun buildUseCaseObservable(params: Params): Single<Movie> {
+    return Single.just(repository.getMovie(params.movieId))
+  }
 
-    class Params(val movieId: Int)
+  class Params(val movieId: Int)
 }
 

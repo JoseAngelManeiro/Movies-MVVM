@@ -11,12 +11,12 @@ import dagger.android.ContributesAndroidInjector
 @Module
 abstract class ActivityBuilder {
 
-    @ContributesAndroidInjector(modules = [(ListActivityModule::class)])
-    @PerActivity
-    internal abstract fun bindListActivity(): MovieListActivity
+  @ContributesAndroidInjector(modules = [(ListActivityModule::class)])
+  @PerActivity
+  internal abstract fun bindListActivity(): MovieListActivity
 
-    @ContributesAndroidInjector(modules = [(DetailActivityModule::class)])
-    @PerActivity
-    internal abstract fun bindDetailActivity(): DetailMovieActivity
+  @ContributesAndroidInjector(modules = [(DetailActivityModule::class)])
+  @PerActivity
+  internal abstract fun bindDetailActivity(): DetailMovieActivity
 
 }

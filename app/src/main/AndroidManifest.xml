@@ -19,8 +19,9 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
-    <activity android:name=".platform.views.DetailMovieActivity"
-      android:label="@string/detail_movie"/>
+    <activity
+      android:name=".platform.views.DetailMovieActivity"
+      android:label="@string/detail_movie" />
   </application>
 
 </manifest>

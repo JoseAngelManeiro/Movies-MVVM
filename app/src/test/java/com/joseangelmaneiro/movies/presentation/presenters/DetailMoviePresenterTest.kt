@@ -25,73 +25,74 @@ private const val IMAGE_URL = "https://image.tmdb.org/t/p/w500fake_poster_path.p
 
 class DetailMoviePresenterTest {
 
-    @Mock
-    lateinit var useCaseFactory: UseCaseFactory
-    @Mock
-    lateinit var useCase: UseCase<Movie, GetMovie.Params>
-    @Mock
-    lateinit var formatter: Formatter
-    @Mock
-    lateinit var view: DetailMovieView
+  @Mock
+  lateinit var useCaseFactory: UseCaseFactory
+  @Mock
+  lateinit var useCase: UseCase<Movie, GetMovie.Params>
+  @Mock
+  lateinit var formatter: Formatter
+  @Mock
+  lateinit var view: DetailMovieView
 
-    val paramsCaptor = argumentCaptor<GetMovie.Params>()
-    val observerCaptor = argumentCaptor<Observer<Movie>>()
+  val paramsCaptor = argumentCaptor<GetMovie.Params>()
+  val observerCaptor = argumentCaptor<Observer<Movie>>()
 
-    lateinit var sut: DetailMoviePresenter
+  lateinit var sut: DetailMoviePresenter
 
-    @Before
-    @Throws(Exception::class)
-    fun setUp() {
-        MockitoAnnotations.initMocks(this)
+  @Before
+  @Throws(Exception::class)
+  fun setUp() {
+    MockitoAnnotations.initMocks(this)
 
-        sut = DetailMoviePresenter(useCaseFactory, formatter,
-            MOVIE_ID
-        )
-        sut.setView(view)
+    sut = DetailMoviePresenter(
+      useCaseFactory, formatter,
+      MOVIE_ID
+    )
+    sut.setView(view)
 
-        whenever(useCaseFactory.getMovie()).thenReturn(useCase)
-        whenever(useCase.execute(any(), any())).thenReturn(mock())
-    }
+    whenever(useCaseFactory.getMovie()).thenReturn(useCase)
+    whenever(useCase.execute(any(), any())).thenReturn(mock())
+  }
 
-    @Test
-    fun viewReady_InvokesUseCase() {
-        sut.viewReady()
+  @Test
+  fun viewReady_InvokesUseCase() {
+    sut.viewReady()
 
-        verify(useCase).execute(any(), paramsCaptor.capture())
-        assertEquals(MOVIE_ID, paramsCaptor.firstValue.movieId)
-    }
+    verify(useCase).execute(any(), paramsCaptor.capture())
+    assertEquals(MOVIE_ID, paramsCaptor.firstValue.movieId)
+  }
 
-    @Test
-    fun displayValuesWhenUseReturnsAMovie() {
-        val movie = whenUseCaseReturnsAMovie()
+  @Test
+  fun displayValuesWhenUseReturnsAMovie() {
+    val movie = whenUseCaseReturnsAMovie()
 
-        thenDisplayMovieValues(movie)
-    }
+    thenDisplayMovieValues(movie)
+  }
 
-    private fun thenDisplayMovieValues(movie: Movie) {
-        verify(view).displayImage(IMAGE_URL)
-        verify(view).displayTitle(movie.title)
-        verify(view).displayVoteAverage(movie.voteAverage)
-        verify(view).displayReleaseDate(RELEASE_DATE)
-        verify(view).displayOverview(movie.overview)
-    }
+  private fun thenDisplayMovieValues(movie: Movie) {
+    verify(view).displayImage(IMAGE_URL)
+    verify(view).displayTitle(movie.title)
+    verify(view).displayVoteAverage(movie.voteAverage)
+    verify(view).displayReleaseDate(RELEASE_DATE)
+    verify(view).displayOverview(movie.overview)
+  }
 
-    @Test
-    fun navUpSelected_InvokesGoToBack() {
-        sut.navUpSelected()
+  @Test
+  fun navUpSelected_InvokesGoToBack() {
+    sut.navUpSelected()
 
-        verify(view).goToBack()
-    }
+    verify(view).goToBack()
+  }
 
-    private fun whenUseCaseReturnsAMovie(): Movie {
-        val movie = TestUtils.createMovie()
-        whenever(formatter.getCompleteUrlImage(movie.backdropPath)).thenReturn(IMAGE_URL)
-        whenever(formatter.formatDate(movie.releaseDate)).thenReturn(RELEASE_DATE)
+  private fun whenUseCaseReturnsAMovie(): Movie {
+    val movie = TestUtils.createMovie()
+    whenever(formatter.getCompleteUrlImage(movie.backdropPath)).thenReturn(IMAGE_URL)
+    whenever(formatter.formatDate(movie.releaseDate)).thenReturn(RELEASE_DATE)
 
-        sut.viewReady()
+    sut.viewReady()
 
-        verify(useCase).execute(observerCaptor.capture(), any())
-        observerCaptor.firstValue.onSuccess(movie)
-        return movie
-    }
+    verify(useCase).execute(observerCaptor.capture(), any())
+    observerCaptor.firstValue.onSuccess(movie)
+    return movie
+  }
 }

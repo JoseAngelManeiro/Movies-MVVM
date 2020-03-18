@@ -8,6 +8,6 @@ import io.reactivex.schedulers.Schedulers
  * JobScheduler implementation based on a Scheduler,
  * which will execute tasks in "a pool of single-threaded instances".
  */
-class JobThread: JobScheduler {
-    override fun getScheduler(): Scheduler = Schedulers.io()
+class JobThread : JobScheduler {
+  override fun getScheduler(): Scheduler = Schedulers.io()
 }

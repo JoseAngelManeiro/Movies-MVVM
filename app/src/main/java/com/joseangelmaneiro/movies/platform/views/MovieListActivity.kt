@@ -10,59 +10,61 @@ import javax.inject.Inject
 
 class MovieListActivity : BaseActivity(), MovieListView {
 
-    @Inject lateinit var presenter: MovieListPresenter
+  @Inject
+  lateinit var presenter: MovieListPresenter
 
-    private lateinit var adapter: MoviesAdapter
+  private lateinit var adapter: MoviesAdapter
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_movie_list)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_movie_list)
 
-        setUpActionBar()
+    setUpActionBar()
 
-        setUpListView()
+    setUpListView()
 
-        setUpRefreshView()
+    setUpRefreshView()
 
-        informPresenterViewIsReady()
-    }
+    informPresenterViewIsReady()
+  }
 
-    private fun setUpActionBar() {
-        setSupportActionBar(toolbar)
-    }
+  private fun setUpActionBar() {
+    setSupportActionBar(toolbar)
+  }
 
-    private fun setUpListView() {
-        adapter = MoviesAdapter(presenter)
-        recyclerView.adapter = adapter
-    }
+  private fun setUpListView() {
+    adapter = MoviesAdapter(presenter)
+    recyclerView.adapter = adapter
+  }
 
-    private fun setUpRefreshView() {
-        refreshLayout.setColorSchemeResources(
-                R.color.colorPrimary,
-                R.color.colorPrimaryDark,
-                R.color.colorAccent)
-        refreshLayout.setOnRefreshListener { presenter.refresh() }
-    }
+  private fun setUpRefreshView() {
+    refreshLayout.setColorSchemeResources(
+      R.color.colorPrimary,
+      R.color.colorPrimaryDark,
+      R.color.colorAccent
+    )
+    refreshLayout.setOnRefreshListener { presenter.refresh() }
+  }
 
-    private fun informPresenterViewIsReady() {
-        presenter.viewReady()
-    }
+  private fun informPresenterViewIsReady() {
+    presenter.viewReady()
+  }
 
-    override fun refreshList() {
-        adapter.refreshData()
-    }
+  override fun refreshList() {
+    adapter.refreshData()
+  }
 
-    override fun cancelRefreshDialog() {
-        refreshLayout.isRefreshing = false
-    }
+  override fun cancelRefreshDialog() {
+    refreshLayout.isRefreshing = false
+  }
 
-    override fun navigateToDetailScreen(movieId: Int) {
-        navigateToDetail(movieId)
-    }
+  override fun navigateToDetailScreen(movieId: Int) {
+    navigateToDetail(movieId)
+  }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.destroy()
-    }
+  override fun onDestroy() {
+    super.onDestroy()
+    presenter.destroy()
+  }
 }

@@ -1,6 +1,6 @@
 package com.joseangelmaneiro.movies.data.source.local
 
-object DbContract{
+object DbContract {
   const val TABLE_NAME = "movie"
   const val COLUMN_ID = "id"
   const val COLUMN_VOTE_COUNT = "voteCount"
