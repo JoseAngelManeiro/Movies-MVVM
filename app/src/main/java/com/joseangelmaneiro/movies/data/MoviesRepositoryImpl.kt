@@ -2,8 +2,10 @@ package com.joseangelmaneiro.movies.data
 
 import com.joseangelmaneiro.movies.data.entity.MovieEntity
 import com.joseangelmaneiro.movies.data.entity.mapper.MovieMapper
+import com.joseangelmaneiro.movies.data.exception.ElementNotFoundException
 import com.joseangelmaneiro.movies.data.source.local.MoviesLocalDataSource
 import com.joseangelmaneiro.movies.data.source.remote.MoviesRemoteDataSource
+import com.joseangelmaneiro.movies.domain.Either
 import com.joseangelmaneiro.movies.domain.Movie
 import com.joseangelmaneiro.movies.domain.MoviesRepository
 
@@ -13,19 +15,28 @@ class MoviesRepositoryImpl(
   private val movieMapper: MovieMapper
 ) : MoviesRepository {
 
-  override fun getMovies(onlyOnline: Boolean): List<Movie> {
-    var movieEntityList: List<MovieEntity>
-    if (onlyOnline) {
-      movieEntityList = remoteDataSource.getMovies()
-      saveData(movieEntityList)
+  override fun getMovies(onlyOnline: Boolean): Either<Exception, List<Movie>> {
+    return if (onlyOnline) {
+      parseRemoteMovieEntities()
     } else {
-      movieEntityList = localDataSource.getMovies()
-      if (movieEntityList.isEmpty()) {
-        movieEntityList = remoteDataSource.getMovies()
-        saveData(movieEntityList)
+      val localResponse = localDataSource.getMovies()
+      if (localResponse.isEmpty()) {
+        parseRemoteMovieEntities()
+      } else {
+        Either.right(movieMapper.transform(localResponse))
       }
     }
-    return movieMapper.transform(movieEntityList)
+  }
+
+  private fun parseRemoteMovieEntities(): Either<Exception, List<Movie>> {
+    return remoteDataSource.getMovies().fold(
+      {
+        Either.left(it)
+      },
+      {
+        saveData(it)
+        Either.right(movieMapper.transform(it))
+      })
   }
 
   private fun saveData(movieEntityList: List<MovieEntity>) {
@@ -33,8 +44,12 @@ class MoviesRepositoryImpl(
     localDataSource.saveMovies(movieEntityList)
   }
 
-  override fun getMovie(movieId: Int): Movie {
-    return movieMapper.transform(localDataSource.getMovie(movieId))!!
+  override fun getMovie(movieId: Int): Either<Exception, Movie> {
+    val movieEntity = localDataSource.getMovie(movieId)
+    return if (movieEntity == null) {
+      Either.left(ElementNotFoundException())
+    } else {
+      Either.right(movieMapper.transform(movieEntity)!!)
+    }
   }
-
 }

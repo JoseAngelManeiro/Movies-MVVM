@@ -6,7 +6,6 @@ import com.joseangelmaneiro.movies.domain.executor.JobScheduler
 import com.joseangelmaneiro.movies.domain.executor.UIScheduler
 import io.reactivex.Single
 
-
 class GetMovie(
   private val repository: MoviesRepository,
   uiScheduler: UIScheduler,
@@ -14,7 +13,18 @@ class GetMovie(
 ) : UseCase<Movie, GetMovie.Params>(uiScheduler, jobScheduler) {
 
   override fun buildUseCaseObservable(params: Params): Single<Movie> {
-    return Single.just(repository.getMovie(params.movieId))
+    return Single.create { emitter ->
+      repository.getMovie(params.movieId).fold(
+        {
+          if (!emitter.isDisposed) {
+            emitter.onError(it)
+          }
+        },
+        {
+          emitter.onSuccess(it)
+        }
+      )
+    }
   }
 
   class Params(val movieId: Int)
