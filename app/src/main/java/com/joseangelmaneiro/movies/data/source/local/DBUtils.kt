@@ -7,8 +7,12 @@ class DBUtils {
     companion object {
         private const val SEPARATOR = ","
 
-        fun transformIntegerListToString(integerList: List<Int>?): String {
-            return TextUtils.join(SEPARATOR, integerList)
+        fun transformIntegerListToString(integerList: List<Int>?): String? {
+            return if (integerList != null) {
+                TextUtils.join(SEPARATOR, integerList)
+            } else {
+                null
+            }
         }
 
         fun transformStringToIntegerList(text: String): List<Int> {
@@ -20,5 +24,4 @@ class DBUtils {
             return integerList
         }
     }
-
 }

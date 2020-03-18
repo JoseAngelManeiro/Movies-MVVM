@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.database.sqlite.SQLiteOpenHelper
 import com.joseangelmaneiro.movies.data.MoviesRepositoryImpl
-import com.joseangelmaneiro.movies.data.entity.mapper.EntityDataMapper
+import com.joseangelmaneiro.movies.data.entity.mapper.MovieMapper
 import com.joseangelmaneiro.movies.data.executor.JobThread
 import com.joseangelmaneiro.movies.data.source.local.MoviesDatabaseHelper
 import com.joseangelmaneiro.movies.data.source.local.MoviesLocalDataSource
@@ -64,8 +64,8 @@ class AppModule {
     @Singleton
     internal fun provideRepository(localDataSource: MoviesLocalDataSource,
                                    remoteDataSource: MoviesRemoteDataSource,
-                                   entityDataMapper: EntityDataMapper): MoviesRepository {
-        return MoviesRepositoryImpl(localDataSource, remoteDataSource, entityDataMapper)
+                                   movieMapper: MovieMapper): MoviesRepository {
+        return MoviesRepositoryImpl(localDataSource, remoteDataSource, movieMapper)
     }
 
     @Provides

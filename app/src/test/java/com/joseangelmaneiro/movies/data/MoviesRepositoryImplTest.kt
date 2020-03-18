@@ -2,7 +2,7 @@ package com.joseangelmaneiro.movies.data
 
 import com.joseangelmaneiro.movies.TestUtils
 import com.joseangelmaneiro.movies.data.entity.MovieEntity
-import com.joseangelmaneiro.movies.data.entity.mapper.EntityDataMapper
+import com.joseangelmaneiro.movies.data.entity.mapper.MovieMapper
 import com.joseangelmaneiro.movies.data.exception.NetworkConnectionException
 import com.joseangelmaneiro.movies.data.exception.ServiceException
 import com.joseangelmaneiro.movies.data.source.local.MoviesLocalDataSource
@@ -32,19 +32,19 @@ class MoviesRepositoryImplTest {
     @Mock
     private lateinit var remoteDataSource: MoviesRemoteDataSource
     @Mock
-    private lateinit var entityDataMapper: EntityDataMapper
+    private lateinit var movieMapper: MovieMapper
 
 
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        sut = MoviesRepositoryImpl(localDataSource, remoteDataSource, entityDataMapper)
+        sut = MoviesRepositoryImpl(localDataSource, remoteDataSource, movieMapper)
     }
 
     @Test
     fun getMovies_ReturnsMoviesFromRemoteDataSource() {
         givenMoviesFromRemote(movieEntityList)
-        whenever(entityDataMapper.transform(movieEntityList)).thenReturn(movieList)
+        whenever(movieMapper.transform(movieEntityList)).thenReturn(movieList)
 
         val response = sut.getMovies(true)
 
@@ -56,7 +56,7 @@ class MoviesRepositoryImplTest {
     @Test
     fun getMovies_ReturnsMoviesFromLocalDataSource() {
         givenMoviesFromLocal(movieEntityList)
-        whenever(entityDataMapper.transform(movieEntityList)).thenReturn(movieList)
+        whenever(movieMapper.transform(movieEntityList)).thenReturn(movieList)
 
         val response = sut.getMovies(false)
 
@@ -67,7 +67,7 @@ class MoviesRepositoryImplTest {
     fun getMovies_ReturnsEmptyListFromLocalDataSource() {
         givenMoviesFromLocal(emptyList())
         givenMoviesFromRemote(movieEntityList)
-        whenever(entityDataMapper.transform(movieEntityList)).thenReturn(movieList)
+        whenever(movieMapper.transform(movieEntityList)).thenReturn(movieList)
 
         val response = sut.getMovies(false)
 
@@ -94,7 +94,7 @@ class MoviesRepositoryImplTest {
     @Test
     fun getMovie_ReturnsMovieFromLocalDataSource() {
         whenever(localDataSource.getMovie(MOVIE_ID)).thenReturn(movieEntity)
-        whenever(entityDataMapper.transform(movieEntity)).thenReturn(movie)
+        whenever(movieMapper.transform(movieEntity)).thenReturn(movie)
 
         val response = sut.getMovie(MOVIE_ID)
 
