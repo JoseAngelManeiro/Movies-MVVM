@@ -1,11 +1,8 @@
 package com.joseangelmaneiro.movies.data.source.remote
 
 import com.joseangelmaneiro.movies.data.entity.MovieEntity
-
+import com.joseangelmaneiro.movies.domain.Either
 
 interface MoviesRemoteDataSource {
-
-    @Throws(Exception::class)
-    fun getMovies(): List<MovieEntity>
-
+  fun getMovies(): Either<Exception, List<MovieEntity>>
 }

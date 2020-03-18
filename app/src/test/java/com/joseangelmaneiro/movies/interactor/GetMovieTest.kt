@@ -15,30 +15,30 @@ private const val MOVIE_ID = 1234
 
 class GetMovieTest {
 
-    lateinit var sut: GetMovie
+  lateinit var sut: GetMovie
 
-    @Mock
-    lateinit var repository: MoviesRepository
+  @Mock
+  lateinit var repository: MoviesRepository
 
-    private val testObserver = TestObserver<Movie>()
+  private val testObserver = TestObserver<Movie>()
 
 
-    @Before
-    @Throws(Exception::class)
-    fun setUp() {
-        MockitoAnnotations.initMocks(this)
+  @Before
+  @Throws(Exception::class)
+  fun setUp() {
+    MockitoAnnotations.initMocks(this)
 
-        sut = GetMovie(repository, mock(), mock())
-    }
+    sut = GetMovie(repository, mock(), mock())
+  }
 
-    @Test
-    fun useCaseInvokesTheRepositoryAndReturnsAMovie() {
-        val repositoryResponse = TestUtils.createMovie()
-        whenever(repository.getMovie(MOVIE_ID)).thenReturn(repositoryResponse)
+  @Test
+  fun useCaseInvokesTheRepositoryAndReturnsAMovie() {
+    val repositoryResponse = TestUtils.createMovie()
+    whenever(repository.getMovie(MOVIE_ID)).thenReturn(repositoryResponse)
 
-        sut.buildUseCaseObservable(GetMovie.Params(MOVIE_ID)).subscribe(testObserver)
+    sut.buildUseCaseObservable(GetMovie.Params(MOVIE_ID)).subscribe(testObserver)
 
-        testObserver.assertValue(repositoryResponse)
-    }
+    testObserver.assertValue(repositoryResponse)
+  }
 
 }

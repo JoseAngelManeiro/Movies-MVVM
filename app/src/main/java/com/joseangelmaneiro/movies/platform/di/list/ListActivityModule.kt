@@ -11,12 +11,14 @@ import dagger.Provides
 @Module
 class ListActivityModule {
 
-    @Provides
-    internal fun providePresenter(activity: MovieListActivity, useCaseFactory: UseCaseFactory,
-                                  formatter: Formatter): MovieListPresenter {
-        val presenter = MovieListPresenter(useCaseFactory, formatter)
-        presenter.setView(activity)
-        return presenter
-    }
+  @Provides
+  internal fun providePresenter(
+    activity: MovieListActivity, useCaseFactory: UseCaseFactory,
+    formatter: Formatter
+  ): MovieListPresenter {
+    val presenter = MovieListPresenter(useCaseFactory, formatter)
+    presenter.setView(activity)
+    return presenter
+  }
 
 }

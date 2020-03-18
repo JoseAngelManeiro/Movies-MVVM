@@ -10,83 +10,85 @@ import com.joseangelmaneiro.movies.presentation.formatters.Formatter
 import java.lang.ref.WeakReference
 
 
-class MovieListPresenter(private val useCaseFactory: UseCaseFactory,
-                         private val formatter: Formatter): BasePresenter() {
+class MovieListPresenter(
+  private val useCaseFactory: UseCaseFactory,
+  private val formatter: Formatter
+) : BasePresenter() {
 
-    private lateinit var view: WeakReference<MovieListView>
+  private lateinit var view: WeakReference<MovieListView>
 
-    private var movieList = emptyList<Movie>()
+  private var movieList = emptyList<Movie>()
 
-    private var selectedMovieId: Int = 0
+  private var selectedMovieId: Int = 0
 
 
-    fun setView(movieListView: MovieListView) {
-        view = WeakReference(movieListView)
+  fun setView(movieListView: MovieListView) {
+    view = WeakReference(movieListView)
+  }
+
+  fun viewReady() {
+    invokeGetMovies(false)
+  }
+
+  fun refresh() {
+    invokeGetMovies(true)
+  }
+
+  private fun invokeGetMovies(refresh: Boolean) {
+    val useCase = useCaseFactory.getMovies()
+    addDisposable(useCase.execute(MoviesObserver(), GetMovies.Params(refresh)))
+  }
+
+  private inner class MoviesObserver : Observer<List<Movie>>() {
+    override fun onSuccess(movies: List<Movie>) {
+      saveMovies(movies)
+      view.get()?.let {
+        it.cancelRefreshDialog()
+        it.refreshList()
+      }
     }
 
-    fun viewReady() {
-        invokeGetMovies(false)
+    override fun onError(exception: Throwable) {
+      view.get()?.let {
+        it.cancelRefreshDialog()
+        it.showErrorMessage(exception.message!!)
+      }
     }
+  }
 
-    fun refresh() {
-        invokeGetMovies(true)
-    }
+  fun getItemsCount(): Int {
+    return if (moviesListIsEmpty()) 0 else movieList.size
+  }
 
-    private fun invokeGetMovies(refresh: Boolean) {
-        val useCase = useCaseFactory.getMovies()
-        addDisposable(useCase.execute(MoviesObserver(), GetMovies.Params(refresh)))
-    }
+  fun configureCell(movieCellView: MovieCellView, position: Int) {
+    val movie = getMovie(position)
+    movieCellView.displayImage(formatter.getCompleteUrlImage(movie.posterPath))
+  }
 
-    private inner class MoviesObserver : Observer<List<Movie>>() {
-        override fun onSuccess(movies: List<Movie>) {
-            saveMovies(movies)
-            view.get()?.let {
-                it.cancelRefreshDialog()
-                it.refreshList()
-            }
-        }
+  fun onItemClick(position: Int) {
+    val movie = getMovie(position)
+    saveSelectedMovieId(movie.id)
+    view.get()?.navigateToDetailScreen(getSelectedMovieId())
+  }
 
-        override fun onError(exception: Throwable) {
-            view.get()?.let {
-                it.cancelRefreshDialog()
-                it.showErrorMessage(exception.message!!)
-            }
-        }
-    }
+  fun saveMovies(movieList: List<Movie>) {
+    this.movieList = movieList
+  }
 
-    fun getItemsCount(): Int{
-        return if(moviesListIsEmpty()) 0 else movieList.size
-    }
+  private fun getMovie(position: Int): Movie {
+    return movieList[position]
+  }
 
-    fun configureCell(movieCellView: MovieCellView, position: Int) {
-        val movie = getMovie(position)
-        movieCellView.displayImage(formatter.getCompleteUrlImage(movie.posterPath))
-    }
+  private fun saveSelectedMovieId(selectedMovieId: Int) {
+    this.selectedMovieId = selectedMovieId
+  }
 
-    fun onItemClick(position: Int) {
-        val movie = getMovie(position)
-        saveSelectedMovieId(movie.id)
-        view.get()?.navigateToDetailScreen(getSelectedMovieId())
-    }
+  fun moviesListIsEmpty(): Boolean {
+    return movieList.isEmpty()
+  }
 
-    fun saveMovies(movieList: List<Movie>) {
-        this.movieList = movieList
-    }
-
-    private fun getMovie(position: Int): Movie {
-        return movieList[position]
-    }
-
-    private fun saveSelectedMovieId(selectedMovieId: Int) {
-        this.selectedMovieId = selectedMovieId
-    }
-
-    fun moviesListIsEmpty(): Boolean {
-        return movieList.isEmpty()
-    }
-
-    fun getSelectedMovieId(): Int {
-        return selectedMovieId
-    }
+  fun getSelectedMovieId(): Int {
+    return selectedMovieId
+  }
 
 }

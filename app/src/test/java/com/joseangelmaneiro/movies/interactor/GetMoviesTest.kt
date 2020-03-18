@@ -14,42 +14,42 @@ import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
 
-class GetMoviesTest{
+class GetMoviesTest {
 
-    lateinit var sut: GetMovies
+  lateinit var sut: GetMovies
 
-    @Mock
-    lateinit var repository: MoviesRepository
+  @Mock
+  lateinit var repository: MoviesRepository
 
-    private val testObserver = TestObserver<List<Movie>>()
+  private val testObserver = TestObserver<List<Movie>>()
 
 
-    @Before
-    @Throws(Exception::class)
-    fun setUp() {
-        MockitoAnnotations.initMocks(this)
+  @Before
+  @Throws(Exception::class)
+  fun setUp() {
+    MockitoAnnotations.initMocks(this)
 
-        sut = GetMovies(repository, mock(), mock())
-    }
+    sut = GetMovies(repository, mock(), mock())
+  }
 
-    @Test
-    fun useCaseInvokesTheRepositoryAndReturnsAListOfMovies() {
-        val repositoryResponse = TestUtils.createDefaultMovieList()
-        whenever(repository.getMovies(any())).thenReturn(repositoryResponse)
+  @Test
+  fun useCaseInvokesTheRepositoryAndReturnsAListOfMovies() {
+    val repositoryResponse = TestUtils.createDefaultMovieList()
+    whenever(repository.getMovies(any())).thenReturn(repositoryResponse)
 
-        sut.buildUseCaseObservable(GetMovies.Params(any())).subscribe(testObserver)
+    sut.buildUseCaseObservable(GetMovies.Params(any())).subscribe(testObserver)
 
-        testObserver.assertValue(repositoryResponse)
-    }
+    testObserver.assertValue(repositoryResponse)
+  }
 
-    @Test
-    fun useCaseInvokesTheRepositoryAndFiresAException() {
-        val repositoryException = ServiceException()
-        whenever(repository.getMovies(any())).thenThrow(repositoryException)
+  @Test
+  fun useCaseInvokesTheRepositoryAndFiresAException() {
+    val repositoryException = ServiceException()
+    whenever(repository.getMovies(any())).thenThrow(repositoryException)
 
-        sut.buildUseCaseObservable(GetMovies.Params(any())).subscribe(testObserver)
+    sut.buildUseCaseObservable(GetMovies.Params(any())).subscribe(testObserver)
 
-        testObserver.assertError(repositoryException)
-    }
+    testObserver.assertError(repositoryException)
+  }
 
 }

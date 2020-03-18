@@ -1,11 +1,8 @@
 package com.joseangelmaneiro.movies.domain
 
+import kotlin.Exception
 
 interface MoviesRepository {
-
-    @Throws(Exception::class)
-    fun getMovies(onlyOnline: Boolean): List<Movie>
-
-    fun getMovie(movieId: Int): Movie
-
+  fun getMovies(onlyOnline: Boolean): Either<Exception, List<Movie>>
+  fun getMovie(movieId: Int): Either<Exception, Movie>
 }

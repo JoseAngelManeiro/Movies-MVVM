@@ -4,6 +4,6 @@ import android.app.Activity
 import com.joseangelmaneiro.movies.platform.views.DetailMovieActivity
 
 
-fun Activity.navigateToDetail(movieId: Int){
-    DetailMovieActivity.launch(this, movieId)
+fun Activity.navigateToDetail(movieId: Int) {
+  DetailMovieActivity.launch(this, movieId)
 }

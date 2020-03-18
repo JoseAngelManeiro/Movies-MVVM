@@ -3,10 +3,10 @@ package com.joseangelmaneiro.movies.presentation
 
 interface MovieListView : BaseView {
 
-    fun refreshList()
+  fun refreshList()
 
-    fun cancelRefreshDialog()
+  fun cancelRefreshDialog()
 
-    fun navigateToDetailScreen(movieId: Int)
+  fun navigateToDetailScreen(movieId: Int)
 
 }

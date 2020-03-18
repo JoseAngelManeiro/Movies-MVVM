@@ -7,5 +7,5 @@ import io.reactivex.Scheduler
  * job thread(data) to UI thread(main).
  */
 interface UIScheduler {
-    fun getScheduler(): Scheduler
+  fun getScheduler(): Scheduler
 }
