@@ -1,7 +1,7 @@
-package com.joseangelmaneiro.movies.data.entity.mapper
+package com.joseangelmaneiro.movies.data.mapper
 
 import com.joseangelmaneiro.movies.data.entity.MovieEntity
-import com.joseangelmaneiro.movies.domain.Movie
+import com.joseangelmaneiro.movies.domain.model.Movie
 import javax.inject.Inject
 
 // Mapper class used to transform MovieEntity, in the data layer, to Movie, in the domain layer.

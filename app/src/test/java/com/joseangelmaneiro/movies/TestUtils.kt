@@ -1,7 +1,7 @@
 package com.joseangelmaneiro.movies
 
 import com.joseangelmaneiro.movies.data.entity.MovieEntity
-import com.joseangelmaneiro.movies.domain.Movie
+import com.joseangelmaneiro.movies.domain.model.Movie
 import java.util.ArrayList
 
 private const val MOVIE_ID = 1

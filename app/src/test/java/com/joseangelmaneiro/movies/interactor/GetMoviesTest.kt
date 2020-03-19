@@ -1,55 +1,34 @@
-package com.joseangelmaneiro.movies.domain.interactor
+package com.joseangelmaneiro.movies.interactor
 
-import com.joseangelmaneiro.movies.TestUtils
-import com.joseangelmaneiro.movies.data.exception.ServiceException
-import com.joseangelmaneiro.movies.domain.Movie
 import com.joseangelmaneiro.movies.domain.MoviesRepository
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
-import io.reactivex.observers.TestObserver
+import com.joseangelmaneiro.movies.domain.interactor.GetMovies
+import com.nhaarman.mockitokotlin2.verify
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
-
 class GetMoviesTest {
 
-  lateinit var sut: GetMovies
+  private lateinit var getMovies: GetMovies
 
   @Mock
   lateinit var repository: MoviesRepository
-
-  private val testObserver = TestObserver<List<Movie>>()
-
 
   @Before
   @Throws(Exception::class)
   fun setUp() {
     MockitoAnnotations.initMocks(this)
 
-    sut = GetMovies(repository, mock(), mock())
+    getMovies = GetMovies(repository)
   }
 
   @Test
-  fun useCaseInvokesTheRepositoryAndReturnsAListOfMovies() {
-    val repositoryResponse = TestUtils.createDefaultMovieList()
-    whenever(repository.getMovies(any())).thenReturn(repositoryResponse)
+  fun `should invokes repository`() {
+    val request = GetMovies.Request(true)
 
-    sut.buildUseCaseObservable(GetMovies.Params(any())).subscribe(testObserver)
+    getMovies(request)
 
-    testObserver.assertValue(repositoryResponse)
+    verify(repository).getMovies(true)
   }
-
-  @Test
-  fun useCaseInvokesTheRepositoryAndFiresAException() {
-    val repositoryException = ServiceException()
-    whenever(repository.getMovies(any())).thenThrow(repositoryException)
-
-    sut.buildUseCaseObservable(GetMovies.Params(any())).subscribe(testObserver)
-
-    testObserver.assertError(repositoryException)
-  }
-
 }

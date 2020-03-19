@@ -4,8 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.database.sqlite.SQLiteOpenHelper
 import com.joseangelmaneiro.movies.data.MoviesRepositoryImpl
-import com.joseangelmaneiro.movies.data.entity.mapper.MovieMapper
-import com.joseangelmaneiro.movies.data.executor.JobThread
+import com.joseangelmaneiro.movies.data.mapper.MovieMapper
 import com.joseangelmaneiro.movies.data.source.local.MoviesDatabaseHelper
 import com.joseangelmaneiro.movies.data.source.local.MoviesLocalDataSource
 import com.joseangelmaneiro.movies.data.source.local.MoviesLocalDataSourceImpl
@@ -13,15 +12,15 @@ import com.joseangelmaneiro.movies.data.source.remote.MoviesRemoteDataSource
 import com.joseangelmaneiro.movies.data.source.remote.MoviesRemoteDataSourceImpl
 import com.joseangelmaneiro.movies.data.source.remote.MovieService
 import com.joseangelmaneiro.movies.domain.MoviesRepository
-import com.joseangelmaneiro.movies.domain.executor.JobScheduler
-import com.joseangelmaneiro.movies.domain.executor.UIScheduler
-import com.joseangelmaneiro.movies.platform.executor.UIThread
+import com.joseangelmaneiro.movies.platform.executor.AsyncInteractorExecutor
+import com.joseangelmaneiro.movies.platform.executor.BackgroundRunner
+import com.joseangelmaneiro.movies.platform.executor.InteractorExecutor
+import com.joseangelmaneiro.movies.platform.executor.MainRunner
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
-
 
 @Module
 class AppModule {
@@ -72,14 +71,10 @@ class AppModule {
 
   @Provides
   @Singleton
-  internal fun provideUIScheduler(): UIScheduler {
-    return UIThread()
+  internal fun provideExecutor(): InteractorExecutor {
+    return AsyncInteractorExecutor(
+      runOnBgThread = BackgroundRunner(),
+      runOnMainThread = MainRunner()
+    )
   }
-
-  @Provides
-  @Singleton
-  internal fun provideJobScheduler(): JobScheduler {
-    return JobThread()
-  }
-
 }

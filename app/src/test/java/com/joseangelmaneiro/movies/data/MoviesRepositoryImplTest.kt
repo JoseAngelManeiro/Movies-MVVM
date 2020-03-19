@@ -2,18 +2,20 @@ package com.joseangelmaneiro.movies.data
 
 import com.joseangelmaneiro.movies.TestUtils
 import com.joseangelmaneiro.movies.data.entity.MovieEntity
-import com.joseangelmaneiro.movies.data.entity.mapper.MovieMapper
+import com.joseangelmaneiro.movies.data.mapper.MovieMapper
 import com.joseangelmaneiro.movies.data.exception.NetworkConnectionException
 import com.joseangelmaneiro.movies.data.exception.ServiceException
 import com.joseangelmaneiro.movies.data.source.local.MoviesLocalDataSource
 import com.joseangelmaneiro.movies.data.source.remote.MoviesRemoteDataSource
+import com.joseangelmaneiro.movies.domain.Either
 import com.nhaarman.mockitokotlin2.*
 import org.junit.Before
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.Mockito.`when`
-import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsEqual
+import org.hamcrest.core.IsInstanceOf
+import org.junit.Assert.assertThat
 import org.junit.Test
 
 const val MOVIE_ID = 1234
@@ -25,7 +27,7 @@ class MoviesRepositoryImplTest {
   private val movieList = TestUtils.createDefaultMovieList()
   private val movie = TestUtils.createMovie()
 
-  private lateinit var sut: MoviesRepositoryImpl
+  private lateinit var moviesRepository: MoviesRepositoryImpl
 
   @Mock
   private lateinit var localDataSource: MoviesLocalDataSource
@@ -38,7 +40,7 @@ class MoviesRepositoryImplTest {
   @Before
   fun setUp() {
     MockitoAnnotations.initMocks(this)
-    sut = MoviesRepositoryImpl(localDataSource, remoteDataSource, movieMapper)
+    moviesRepository = MoviesRepositoryImpl(localDataSource, remoteDataSource, movieMapper)
   }
 
   @Test
@@ -46,11 +48,11 @@ class MoviesRepositoryImplTest {
     givenMoviesFromRemote(movieEntityList)
     whenever(movieMapper.transform(movieEntityList)).thenReturn(movieList)
 
-    val response = sut.getMovies(true)
+    val response = moviesRepository.getMovies(true)
 
     verify(localDataSource).deleteAllMovies()
     verify(localDataSource).saveMovies(movieEntityList)
-    assertThat(response, IsEqual(movieList))
+    assertThat(response.rightValue, IsEqual(movieList))
   }
 
   @Test
@@ -58,9 +60,9 @@ class MoviesRepositoryImplTest {
     givenMoviesFromLocal(movieEntityList)
     whenever(movieMapper.transform(movieEntityList)).thenReturn(movieList)
 
-    val response = sut.getMovies(false)
+    val response = moviesRepository.getMovies(false)
 
-    assertThat(response, IsEqual(movieList))
+    assertThat(response.rightValue, IsEqual(movieList))
   }
 
   @Test
@@ -69,26 +71,29 @@ class MoviesRepositoryImplTest {
     givenMoviesFromRemote(movieEntityList)
     whenever(movieMapper.transform(movieEntityList)).thenReturn(movieList)
 
-    val response = sut.getMovies(false)
+    val response = moviesRepository.getMovies(false)
 
     verify(localDataSource).deleteAllMovies()
     verify(localDataSource).saveMovies(movieEntityList)
-    assertThat(response, IsEqual(movieList))
+    assertThat(response.rightValue, IsEqual(movieList))
   }
 
-  @Test(expected = ServiceException::class)
-  @Throws(Exception::class)
+  @Test
   fun getMovies_ReturnsServiceExceptionFromRemoteDataSource() {
     givenExceptionFromRemote(ServiceException())
 
-    sut.getMovies(true)
+    val response = moviesRepository.getMovies(true)
+
+    assertThat(response.leftValue, IsInstanceOf(ServiceException::class.java))
   }
 
-  @Test(expected = NetworkConnectionException::class)
+  @Test
   fun getMovies_ReturnsNetworkConnectionExceptionFromRemoteDataSource() {
     givenExceptionFromRemote(NetworkConnectionException())
 
-    sut.getMovies(true)
+    val response = moviesRepository.getMovies(true)
+
+    assertThat(response.leftValue, IsInstanceOf(NetworkConnectionException::class.java))
   }
 
   @Test
@@ -96,13 +101,13 @@ class MoviesRepositoryImplTest {
     whenever(localDataSource.getMovie(MOVIE_ID)).thenReturn(movieEntity)
     whenever(movieMapper.transform(movieEntity)).thenReturn(movie)
 
-    val response = sut.getMovie(MOVIE_ID)
+    val response = moviesRepository.getMovie(MOVIE_ID)
 
-    assertThat(response, IsEqual(movie))
+    assertThat(response.rightValue, IsEqual(movie))
   }
 
   private fun givenMoviesFromRemote(movies: List<MovieEntity>) {
-    `when`(remoteDataSource.getMovies()).thenReturn(movies)
+    `when`(remoteDataSource.getMovies()).thenReturn(Either.right(movies))
   }
 
   private fun givenMoviesFromLocal(movies: List<MovieEntity>) {
@@ -110,7 +115,7 @@ class MoviesRepositoryImplTest {
   }
 
   private fun givenExceptionFromRemote(exception: Exception) {
-    `when`(remoteDataSource.getMovies()).thenThrow(exception)
+    `when`(remoteDataSource.getMovies()).thenReturn(Either.left(exception))
   }
 
 }
