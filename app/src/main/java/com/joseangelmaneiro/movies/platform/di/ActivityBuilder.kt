@@ -7,7 +7,6 @@ import com.joseangelmaneiro.movies.platform.views.MovieListActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
-
 @Module
 abstract class ActivityBuilder {
 

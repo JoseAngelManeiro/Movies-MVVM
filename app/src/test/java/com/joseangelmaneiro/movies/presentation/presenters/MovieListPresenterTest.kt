@@ -1,11 +1,10 @@
 package com.joseangelmaneiro.movies.presentation.presenters
 
 import com.joseangelmaneiro.movies.TestUtils
-import com.joseangelmaneiro.movies.domain.Movie
-import com.joseangelmaneiro.movies.domain.Observer
+import com.joseangelmaneiro.movies.domain.Either
+import com.joseangelmaneiro.movies.domain.model.Movie
 import com.joseangelmaneiro.movies.domain.interactor.GetMovies
-import com.joseangelmaneiro.movies.domain.interactor.UseCase
-import com.joseangelmaneiro.movies.domain.interactor.UseCaseFactory
+import com.joseangelmaneiro.movies.platform.executor.SyncInteractorExecutor
 import com.joseangelmaneiro.movies.presentation.MovieCellView
 import com.joseangelmaneiro.movies.presentation.MovieListView
 import com.joseangelmaneiro.movies.presentation.formatters.Formatter
@@ -17,15 +16,12 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
-private const val POSITION = 0
 private const val IMAGE_URL = "https://image.tmdb.org/t/p/w500fake_poster_path.png"
 
 class MovieListPresenterTest {
 
   @Mock
-  lateinit var useCaseFactory: UseCaseFactory
-  @Mock
-  lateinit var useCase: UseCase<List<Movie>, GetMovies.Params>
+  lateinit var getMovies: GetMovies
   @Mock
   lateinit var view: MovieListView
   @Mock
@@ -33,108 +29,107 @@ class MovieListPresenterTest {
   @Mock
   lateinit var formatter: Formatter
 
-  val observerCaptor = argumentCaptor<Observer<List<Movie>>>()
-  val paramsCaptor = argumentCaptor<GetMovies.Params>()
+  private val paramsCaptor = argumentCaptor<GetMovies.Request>()
 
-  lateinit var sut: MovieListPresenter
+  private lateinit var presenter: MovieListPresenter
 
   @Before
   fun setUp() {
     MockitoAnnotations.initMocks(this)
 
-    sut = MovieListPresenter(useCaseFactory, formatter)
-    sut.setView(view)
-
-    whenever(useCaseFactory.getMovies()).thenReturn(useCase)
-    whenever(useCase.execute(any(), any())).thenReturn(mock())
+    presenter = MovieListPresenter(
+      executor = SyncInteractorExecutor(),
+      getMovies = getMovies,
+      formatter = formatter
+    )
+    presenter.setView(view)
   }
 
   @Test
-  fun viewReady_InvokesUseCase() {
-    sut.viewReady()
+  fun `should invokes interactor without refresh mode when view is ready`() {
+    whenever(getMovies.invoke(GetMovies.Request(false)))
+      .thenReturn(Either.right(TestUtils.createDefaultMovieList()))
 
-    verify(useCase).execute(any(), paramsCaptor.capture())
+    presenter.viewReady()
+
+    verify(getMovies).invoke(paramsCaptor.capture())
     assertFalse(paramsCaptor.firstValue.isOnlyOnline)
   }
 
   @Test
-  fun refresh_InvokesUseCase() {
-    sut.refresh()
+  fun `should invokes interactor with refresh mode when refresh is called`() {
+    whenever(getMovies.invoke(GetMovies.Request(true)))
+      .thenReturn(Either.right(TestUtils.createDefaultMovieList()))
 
-    verify(useCase).execute(any(), paramsCaptor.capture())
+    presenter.refresh()
+
+    verify(getMovies).invoke(paramsCaptor.capture())
     assertTrue(paramsCaptor.firstValue.isOnlyOnline)
   }
 
   @Test
-  fun saveResultAndRefreshViewWhenUseCaseReturnsAMovieList() {
-    whenUseCaseReturnsAMovieList(TestUtils.createDefaultMovieList())
+  fun `should save result and refresh view when interactor returns correct data`() {
+    whenever(getMovies.invoke(any()))
+      .thenReturn(Either.right(TestUtils.createDefaultMovieList()))
 
-    assertFalse(sut.moviesListIsEmpty())
+    presenter.viewReady()
+
+    assertFalse(presenter.moviesListIsEmpty())
     verify(view).cancelRefreshDialog()
     verify(view).refreshList()
   }
 
   @Test
-  fun showErrorMessageWhenUseCaseFiresAException() {
-    whenUseCaseFiresAException(Exception("Fake error"))
+  fun `should show error message when interactor returns an exception`() {
+    whenever(getMovies.invoke(any()))
+      .thenReturn(Either.left(Exception("Fake error")))
+
+    presenter.viewReady()
 
     verify(view).cancelRefreshDialog()
     verify(view).showErrorMessage("Fake error")
   }
 
   @Test
-  fun getItemsCount_ReturnsZeroWhenThereIsNoData() {
-    assertEquals(0, sut.getItemsCount())
+  fun `should returns 0 when there is no data and getItemsCount is called`() {
+    assertEquals(0, presenter.getItemsCount())
   }
 
   @Test
-  fun getItemsCount_ReturnsTheNumberOfItems() {
-    val movieList = givenASavedMovieList()
+  fun `should returns the current items number when getItemsCount is called`() {
+    val movieList = TestUtils.createDefaultMovieList()
 
-    assertThat(sut.getItemsCount(), IsEqual(movieList.size))
+    presenter.saveMovies(movieList)
+
+    assertThat(presenter.getItemsCount(), IsEqual(movieList.size))
   }
 
   @Test
-  fun configureCell_DisplaysImage() {
-    val (_, _, _, posterPath) = givenAMovieFromSavedList(POSITION)
-    whenever(formatter.getCompleteUrlImage(posterPath)).thenReturn(IMAGE_URL)
+  fun `should displays image when configureCell is called`() {
+    val positionSelected = 1
+    val movie = givenAMovieFromSavedList(positionSelected)
+    whenever(formatter.getCompleteUrlImage(movie.posterPath))
+      .thenReturn(IMAGE_URL)
 
-    sut.configureCell(cellView, POSITION)
+    presenter.configureCell(cellView, positionSelected)
 
     verify(cellView).displayImage(IMAGE_URL)
   }
 
   @Test
-  fun onItemClick_SavesSelectedMovieIdAndInvokesNavigateToDetailScreen() {
-    val (id) = givenAMovieFromSavedList(POSITION)
+  fun `should saves movie id and navigates to detail screen when onItemClick is called`() {
+    val positionSelected = 1
+    val movie = givenAMovieFromSavedList(positionSelected)
 
-    sut.onItemClick(POSITION)
+    presenter.onItemClick(positionSelected)
 
-    assertThat(sut.getSelectedMovieId(), IsEqual(id))
-    verify(view).navigateToDetailScreen(id)
-  }
-
-  private fun whenUseCaseReturnsAMovieList(movies: List<Movie>) {
-    sut.viewReady()
-
-    verify(useCase).execute(observerCaptor.capture(), any())
-    observerCaptor.firstValue.onSuccess(movies)
-  }
-
-  private fun whenUseCaseFiresAException(exception: Exception) {
-    sut.viewReady()
-
-    verify(useCase).execute(observerCaptor.capture(), any())
-    observerCaptor.firstValue.onError(exception)
-  }
-
-  private fun givenASavedMovieList(): List<Movie> {
-    val movieList = TestUtils.createDefaultMovieList()
-    sut.saveMovies(movieList)
-    return movieList
+    assertThat(presenter.getSelectedMovieId(), IsEqual(movie.id))
+    verify(view).navigateToDetailScreen(movie.id)
   }
 
   private fun givenAMovieFromSavedList(position: Int): Movie {
-    return givenASavedMovieList()[position]
+    val movieList = TestUtils.createDefaultMovieList()
+    presenter.saveMovies(movieList)
+    return movieList[position]
   }
 }

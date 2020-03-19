@@ -62,9 +62,4 @@ class MovieListActivity : BaseActivity(), MovieListView {
   override fun navigateToDetailScreen(movieId: Int) {
     navigateToDetail(movieId)
   }
-
-  override fun onDestroy() {
-    super.onDestroy()
-    presenter.destroy()
-  }
 }

@@ -1,5 +1,6 @@
 package com.joseangelmaneiro.movies.domain
 
+import com.joseangelmaneiro.movies.domain.model.Movie
 import kotlin.Exception
 
 interface MoviesRepository {

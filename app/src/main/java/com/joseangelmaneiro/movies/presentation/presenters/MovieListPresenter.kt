@@ -1,26 +1,24 @@
 package com.joseangelmaneiro.movies.presentation.presenters
 
-import com.joseangelmaneiro.movies.domain.Movie
-import com.joseangelmaneiro.movies.domain.Observer
+import com.joseangelmaneiro.movies.domain.model.Movie
 import com.joseangelmaneiro.movies.domain.interactor.GetMovies
-import com.joseangelmaneiro.movies.domain.interactor.UseCaseFactory
+import com.joseangelmaneiro.movies.platform.executor.InteractorExecutor
 import com.joseangelmaneiro.movies.presentation.MovieCellView
 import com.joseangelmaneiro.movies.presentation.MovieListView
 import com.joseangelmaneiro.movies.presentation.formatters.Formatter
 import java.lang.ref.WeakReference
 
-
 class MovieListPresenter(
-  private val useCaseFactory: UseCaseFactory,
+  private val executor: InteractorExecutor,
+  private val getMovies: GetMovies,
   private val formatter: Formatter
-) : BasePresenter() {
+) {
 
   private lateinit var view: WeakReference<MovieListView>
 
   private var movieList = emptyList<Movie>()
 
   private var selectedMovieId: Int = 0
-
 
   fun setView(movieListView: MovieListView) {
     view = WeakReference(movieListView)
@@ -35,25 +33,23 @@ class MovieListPresenter(
   }
 
   private fun invokeGetMovies(refresh: Boolean) {
-    val useCase = useCaseFactory.getMovies()
-    addDisposable(useCase.execute(MoviesObserver(), GetMovies.Params(refresh)))
-  }
-
-  private inner class MoviesObserver : Observer<List<Movie>>() {
-    override fun onSuccess(movies: List<Movie>) {
-      saveMovies(movies)
-      view.get()?.let {
-        it.cancelRefreshDialog()
-        it.refreshList()
+    executor(
+      interactor = getMovies,
+      request = GetMovies.Request(refresh),
+      onError = { exception ->
+        view.get()?.let {
+          it.cancelRefreshDialog()
+          it.showErrorMessage(exception.message!!)
+        }
+      },
+      onSuccess = { movies ->
+        saveMovies(movies)
+        view.get()?.let {
+          it.cancelRefreshDialog()
+          it.refreshList()
+        }
       }
-    }
-
-    override fun onError(exception: Throwable) {
-      view.get()?.let {
-        it.cancelRefreshDialog()
-        it.showErrorMessage(exception.message!!)
-      }
-    }
+    )
   }
 
   fun getItemsCount(): Int {
@@ -90,5 +86,4 @@ class MovieListPresenter(
   fun getSelectedMovieId(): Int {
     return selectedMovieId
   }
-
 }

@@ -12,7 +12,6 @@ import com.joseangelmaneiro.movies.presentation.presenters.DetailMoviePresenter
 import com.joseangelmaneiro.movies.presentation.DetailMovieView
 import javax.inject.Inject
 
-
 class DetailMovieActivity : BaseActivity(), DetailMovieView {
 
   companion object {
@@ -81,10 +80,4 @@ class DetailMovieActivity : BaseActivity(), DetailMovieView {
       else -> super.onOptionsItemSelected(item)
     }
   }
-
-  override fun onDestroy() {
-    super.onDestroy()
-    presenter.destroy()
-  }
-
 }

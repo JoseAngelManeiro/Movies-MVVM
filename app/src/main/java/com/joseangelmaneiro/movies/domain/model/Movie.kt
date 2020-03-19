@@ -1,4 +1,4 @@
-package com.joseangelmaneiro.movies.domain
+package com.joseangelmaneiro.movies.domain.model
 
 
 // Movie in the domain layer
