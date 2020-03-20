@@ -6,15 +6,12 @@ import com.joseangelmaneiro.movies.platform.navigateToDetail
 import com.joseangelmaneiro.movies.presentation.presenters.MovieListPresenter
 import com.joseangelmaneiro.movies.presentation.MovieListView
 import kotlinx.android.synthetic.main.activity_movie_list.*
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 class MovieListActivity : BaseActivity(), MovieListView {
 
-  @Inject
-  lateinit var presenter: MovieListPresenter
-
+  private val presenter: MovieListPresenter by inject()
   private lateinit var adapter: MoviesAdapter
-
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -48,6 +45,7 @@ class MovieListActivity : BaseActivity(), MovieListView {
   }
 
   private fun informPresenterViewIsReady() {
+    presenter.setView(this)
     presenter.viewReady()
   }
 

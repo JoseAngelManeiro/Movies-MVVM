@@ -11,8 +11,9 @@ import com.joseangelmaneiro.movies.presentation.presenters.MovieListPresenter
 import com.squareup.picasso.Picasso
 
 
-class MoviesAdapter(private val presenter: MovieListPresenter) :
-  RecyclerView.Adapter<MoviesAdapter.MovieHolder>() {
+class MoviesAdapter(
+  private val presenter: MovieListPresenter
+) : RecyclerView.Adapter<MoviesAdapter.MovieHolder>() {
 
   override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): MovieHolder {
     if (viewGroup is RecyclerView) {

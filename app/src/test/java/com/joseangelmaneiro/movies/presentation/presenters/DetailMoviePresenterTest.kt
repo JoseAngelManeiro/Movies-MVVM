@@ -6,7 +6,6 @@ import com.joseangelmaneiro.movies.domain.interactor.GetMovie
 import com.joseangelmaneiro.movies.platform.executor.SyncInteractorExecutor
 import com.joseangelmaneiro.movies.presentation.DetailMovieView
 import com.joseangelmaneiro.movies.presentation.formatters.Formatter
-import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Before
@@ -37,8 +36,7 @@ class DetailMoviePresenterTest {
     presenter = DetailMoviePresenter(
       executor = SyncInteractorExecutor(),
       getMovie = getMovie,
-      formatter = formatter,
-      movieId = MOVIE_ID
+      formatter = formatter
     )
     presenter.setView(view)
   }
@@ -48,9 +46,9 @@ class DetailMoviePresenterTest {
     val movie = TestUtils.createMovie()
     whenever(formatter.getCompleteUrlImage(movie.backdropPath)).thenReturn(IMAGE_URL)
     whenever(formatter.formatDate(movie.releaseDate)).thenReturn(RELEASE_DATE)
-    whenever(getMovie.invoke(any())).thenReturn(Either.right(movie))
+    whenever(getMovie.invoke(GetMovie.Request(MOVIE_ID))).thenReturn(Either.right(movie))
 
-    presenter.viewReady()
+    presenter.viewReady(MOVIE_ID)
 
     verify(view).displayImage(IMAGE_URL)
     verify(view).displayTitle(movie.title)

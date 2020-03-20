@@ -10,9 +10,11 @@ import android.content.Intent
 import android.app.Activity
 import com.joseangelmaneiro.movies.presentation.presenters.DetailMoviePresenter
 import com.joseangelmaneiro.movies.presentation.DetailMovieView
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 class DetailMovieActivity : BaseActivity(), DetailMovieView {
+
+  private val presenter: DetailMoviePresenter by inject()
 
   companion object {
     const val EXTRA_MOVIE_ID = "MOVIE_ID"
@@ -22,10 +24,6 @@ class DetailMovieActivity : BaseActivity(), DetailMovieView {
       activity.startActivity(intent)
     }
   }
-
-  @Inject
-  lateinit var presenter: DetailMoviePresenter
-
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -42,7 +40,11 @@ class DetailMovieActivity : BaseActivity(), DetailMovieView {
   }
 
   private fun informPresenterViewIsReady() {
-    presenter.viewReady()
+    val movieId = intent.getIntExtra(EXTRA_MOVIE_ID, -1)
+    if (movieId != -1) {
+      presenter.setView(this)
+      presenter.viewReady(movieId)
+    }
   }
 
   override fun displayImage(url: String) {
