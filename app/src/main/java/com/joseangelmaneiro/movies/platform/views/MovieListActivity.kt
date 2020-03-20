@@ -2,24 +2,24 @@ package com.joseangelmaneiro.movies.platform.views
 
 import android.os.Bundle
 import com.joseangelmaneiro.movies.R
+import com.joseangelmaneiro.movies.domain.model.Movie
 import com.joseangelmaneiro.movies.platform.navigateToDetail
 import com.joseangelmaneiro.movies.presentation.presenters.MovieListPresenter
 import com.joseangelmaneiro.movies.presentation.MovieListView
+import com.joseangelmaneiro.movies.presentation.formatters.Formatter
 import kotlinx.android.synthetic.main.activity_movie_list.*
 import org.koin.android.ext.android.inject
 
 class MovieListActivity : BaseActivity(), MovieListView {
 
   private val presenter: MovieListPresenter by inject()
-  private lateinit var adapter: MoviesAdapter
+  private val formatter: Formatter by inject()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_movie_list)
 
     setUpActionBar()
-
-    setUpListView()
 
     setUpRefreshView()
 
@@ -28,11 +28,6 @@ class MovieListActivity : BaseActivity(), MovieListView {
 
   private fun setUpActionBar() {
     setSupportActionBar(toolbar)
-  }
-
-  private fun setUpListView() {
-    adapter = MoviesAdapter(presenter)
-    recyclerView.adapter = adapter
   }
 
   private fun setUpRefreshView() {
@@ -49,8 +44,12 @@ class MovieListActivity : BaseActivity(), MovieListView {
     presenter.viewReady()
   }
 
-  override fun refreshList() {
-    adapter.refreshData()
+  override fun showMovies(movies: List<Movie>) {
+    recyclerView.adapter = MoviesAdapter(
+      movies = movies,
+      formatter = formatter,
+      listener = { presenter.onItemClick(it) }
+    )
   }
 
   override fun cancelRefreshDialog() {

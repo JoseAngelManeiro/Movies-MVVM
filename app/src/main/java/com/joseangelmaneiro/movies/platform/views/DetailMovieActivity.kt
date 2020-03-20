@@ -8,13 +8,16 @@ import kotlinx.android.synthetic.main.activity_detail_movie.*
 import kotlinx.android.synthetic.main.content_detail_movie.*
 import android.content.Intent
 import android.app.Activity
+import com.joseangelmaneiro.movies.domain.model.Movie
 import com.joseangelmaneiro.movies.presentation.presenters.DetailMoviePresenter
 import com.joseangelmaneiro.movies.presentation.DetailMovieView
+import com.joseangelmaneiro.movies.presentation.formatters.Formatter
 import org.koin.android.ext.android.inject
 
 class DetailMovieActivity : BaseActivity(), DetailMovieView {
 
   private val presenter: DetailMoviePresenter by inject()
+  private val formatter: Formatter by inject()
 
   companion object {
     const val EXTRA_MOVIE_ID = "MOVIE_ID"
@@ -29,14 +32,7 @@ class DetailMovieActivity : BaseActivity(), DetailMovieView {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_detail_movie)
 
-    setUpActionBar()
-
     informPresenterViewIsReady()
-  }
-
-  private fun setUpActionBar() {
-    setSupportActionBar(toolbar)
-    supportActionBar!!.setDisplayHomeAsUpEnabled(true)
   }
 
   private fun informPresenterViewIsReady() {
@@ -47,26 +43,20 @@ class DetailMovieActivity : BaseActivity(), DetailMovieView {
     }
   }
 
-  override fun displayImage(url: String) {
+  override fun displayMovie(movie: Movie) {
+    setUpActionBar(movie.title)
     Picasso.with(this)
-      .load(url)
+      .load(formatter.getCompleteUrlImage(movie.backdropPath))
       .into(image_movie)
+    text_voteAverage.text = movie.voteAverage
+    text_releaseDate.text = formatter.formatDate(movie.releaseDate)
+    text_overview.text = movie.overview
   }
 
-  override fun displayTitle(title: String) {
+  private fun setUpActionBar(title: String) {
+    setSupportActionBar(toolbar)
+    supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     setTitle(title)
-  }
-
-  override fun displayVoteAverage(voteAverage: String) {
-    text_voteAverage.text = voteAverage
-  }
-
-  override fun displayReleaseDate(releaseDate: String) {
-    text_releaseDate.text = releaseDate
-  }
-
-  override fun displayOverview(overview: String) {
-    text_overview.text = overview
   }
 
   override fun goToBack() {

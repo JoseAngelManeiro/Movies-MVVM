@@ -1,18 +1,8 @@
 package com.joseangelmaneiro.movies.presentation
 
+import com.joseangelmaneiro.movies.domain.model.Movie
 
 interface DetailMovieView : BaseView {
-
-  fun displayImage(url: String)
-
-  fun displayTitle(title: String)
-
-  fun displayVoteAverage(voteAverage: String)
-
-  fun displayReleaseDate(releaseDate: String)
-
-  fun displayOverview(overview: String)
-
+  fun displayMovie(movie: Movie)
   fun goToBack()
-
 }

@@ -37,6 +37,8 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
 
+    implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.viewModelVersion"
+
     implementation "org.koin:koin-android-viewmodel:$rootProject.koinVersion"
 
     testImplementation "org.mockito:mockito-core:$rootProject.mockitoVersion"

@@ -33,6 +33,7 @@ ext {
     swiperefreshlayoutVersion = '1.0.0'
     picassoVersion = '2.5.2'
     retrofitVersion = '2.1.0'
+    viewModelVersion = '2.2.0'
     koinVersion = '2.0.1'
     mockitoVersion = '2.8.47'
     mockitoKotlinVersion = '2.0.0-RC1'

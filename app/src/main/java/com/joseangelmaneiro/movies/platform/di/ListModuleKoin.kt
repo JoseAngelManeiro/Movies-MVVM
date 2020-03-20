@@ -7,6 +7,6 @@ import org.koin.dsl.module
 val listModule = module {
   factory { GetMovies(repository = get()) }
   factory {
-    MovieListPresenter(executor = get(), getMovies = get(), formatter = get())
+    MovieListPresenter(executor = get(), getMovies = get())
   }
 }
