@@ -6,14 +6,12 @@ import com.joseangelmaneiro.movies.domain.model.Movie
 import com.joseangelmaneiro.movies.platform.navigateToDetail
 import com.joseangelmaneiro.movies.presentation.presenters.MovieListPresenter
 import com.joseangelmaneiro.movies.presentation.MovieListView
-import com.joseangelmaneiro.movies.presentation.formatters.Formatter
 import kotlinx.android.synthetic.main.activity_movie_list.*
 import org.koin.android.ext.android.inject
 
 class MovieListActivity : BaseActivity(), MovieListView {
 
   private val presenter: MovieListPresenter by inject()
-  private val formatter: Formatter by inject()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -47,7 +45,6 @@ class MovieListActivity : BaseActivity(), MovieListView {
   override fun showMovies(movies: List<Movie>) {
     recyclerView.adapter = MoviesAdapter(
       movies = movies,
-      formatter = formatter,
       listener = { presenter.onItemClick(it) }
     )
   }

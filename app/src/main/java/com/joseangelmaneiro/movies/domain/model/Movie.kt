@@ -1,5 +1,6 @@
 package com.joseangelmaneiro.movies.domain.model
 
+import java.util.*
 
 // Movie in the domain layer
 data class Movie(
@@ -9,5 +10,5 @@ data class Movie(
   val posterPath: String,
   val backdropPath: String?,
   val overview: String,
-  val releaseDate: String
+  val releaseDate: Date
 )

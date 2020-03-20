@@ -7,12 +7,10 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.joseangelmaneiro.movies.R
 import com.joseangelmaneiro.movies.domain.model.Movie
-import com.joseangelmaneiro.movies.presentation.formatters.Formatter
 import com.squareup.picasso.Picasso
 
 class MoviesAdapter(
   private val movies: List<Movie>,
-  private val formatter: Formatter,
   private val listener: (Movie) -> Unit
 ) : RecyclerView.Adapter<MoviesAdapter.MovieHolder>() {
 
@@ -46,7 +44,7 @@ class MoviesAdapter(
 
     fun bind(movie: Movie) {
       Picasso.with(imageView.context)
-        .load(formatter.getCompleteUrlImage(movie.posterPath))
+        .load(movie.posterPath)
         .placeholder(R.drawable.movie_placeholder)
         .into(imageView)
     }

@@ -46,7 +46,7 @@ class DetailMovieActivity : BaseActivity(), DetailMovieView {
   override fun displayMovie(movie: Movie) {
     setUpActionBar(movie.title)
     Picasso.with(this)
-      .load(formatter.getCompleteUrlImage(movie.backdropPath))
+      .load(movie.backdropPath)
       .into(image_movie)
     text_voteAverage.text = movie.voteAverage
     text_releaseDate.text = formatter.formatDate(movie.releaseDate)

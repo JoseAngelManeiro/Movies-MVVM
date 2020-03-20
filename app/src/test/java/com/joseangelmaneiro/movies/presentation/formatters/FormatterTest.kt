@@ -3,6 +3,7 @@ package com.joseangelmaneiro.movies.presentation.formatters
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import java.util.*
 
 class FormatterTest {
 
@@ -14,19 +15,11 @@ class FormatterTest {
   }
 
   @Test
-  fun getCompleteUrlImage_ReturnsCorrectUrl() {
-    val fakePath = "fake-path"
-    val urlExpected = Formatter.BASE_URL_IMAGE + fakePath
-
-    Assert.assertEquals(urlExpected, sut.getCompleteUrlImage(fakePath))
-  }
-
-  @Test
   fun formatDate_ReturnsCorrectDate() {
-    val serverDate = "2017-10-22"
+    val date = GregorianCalendar(2017, Calendar.OCTOBER, 22).time
     val dateExpected = "22/10/2017"
 
-    Assert.assertEquals(dateExpected, sut.formatDate(serverDate))
+    Assert.assertEquals(dateExpected, sut.formatDate(date))
   }
 
 }

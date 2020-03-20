@@ -2,7 +2,7 @@ package com.joseangelmaneiro.movies
 
 import com.joseangelmaneiro.movies.data.entity.MovieEntity
 import com.joseangelmaneiro.movies.domain.model.Movie
-import java.util.ArrayList
+import java.util.*
 
 private const val MOVIE_ID = 1
 private const val VOTE_COUNT = 5
@@ -17,7 +17,7 @@ private val GENRE_IDS: List<Int>? = null
 private const val BACKDROPPATH = "fake_backdroppath.png"
 private const val ADULT = false
 private const val OVERVIEW = "Overview"
-private const val RELEASE_DATE = "05/12/2017"
+private val RELEASE_DATE = GregorianCalendar(2017, 12, 5).time
 
 const val DEFAULT_SIZE_LIST = 10
 
@@ -29,7 +29,7 @@ class TestUtils {
       return MovieEntity(
         VOTE_COUNT, MOVIE_ID, VIDEO, VOTE_AVERAGE, TITLE, POPULARITY,
         POSTER_PATH, ORIGINAL_LANGUAGE, ORIGINAL_TITLE, GENRE_IDS, BACKDROPPATH, ADULT,
-        OVERVIEW, RELEASE_DATE
+        OVERVIEW, "05/12/2017"
       )
     }
 
@@ -43,16 +43,21 @@ class TestUtils {
         val movie = MovieEntity(
           VOTE_COUNT, i, VIDEO, VOTE_AVERAGE, TITLE, POPULARITY,
           POSTER_PATH, ORIGINAL_LANGUAGE, ORIGINAL_TITLE, GENRE_IDS, BACKDROPPATH,
-          ADULT, OVERVIEW, RELEASE_DATE
+          ADULT, OVERVIEW, "05/12/2017"
         )
         movies.add(movie)
       }
       return movies
     }
 
-    fun createMovie(): Movie {
+    fun createMovie(id: Int = MOVIE_ID): Movie {
       return Movie(
-        MOVIE_ID, VOTE_AVERAGE, TITLE, POSTER_PATH, BACKDROPPATH, OVERVIEW,
+        id,
+        VOTE_AVERAGE,
+        TITLE,
+        POSTER_PATH,
+        BACKDROPPATH,
+        OVERVIEW,
         RELEASE_DATE
       )
     }
@@ -64,15 +69,9 @@ class TestUtils {
     fun createMovieList(numMovies: Int): List<Movie> {
       val movies = mutableListOf<Movie>()
       for (i in 0 until numMovies) {
-        val movie = Movie(
-          i, VOTE_AVERAGE, TITLE, POSTER_PATH, BACKDROPPATH, OVERVIEW,
-          RELEASE_DATE
-        )
-        movies.add(movie)
+        movies.add(createMovie(i))
       }
       return movies
     }
-
   }
-
 }
