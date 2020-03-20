@@ -1,15 +1,17 @@
 package com.joseangelmaneiro.movies.presentation.presenters
 
 import androidx.lifecycle.ViewModel
-import com.joseangelmaneiro.movies.domain.model.Movie
 import com.joseangelmaneiro.movies.domain.interactor.GetMovies
 import com.joseangelmaneiro.movies.platform.executor.InteractorExecutor
 import com.joseangelmaneiro.movies.presentation.MovieListView
+import com.joseangelmaneiro.movies.presentation.MovieModelFactory
+import com.joseangelmaneiro.movies.presentation.model.MovieModel
 import java.lang.ref.WeakReference
 
 class MovieListPresenter(
   private val executor: InteractorExecutor,
-  private val getMovies: GetMovies
+  private val getMovies: GetMovies,
+  private val movieModelFactory: MovieModelFactory
 ) : ViewModel() {
 
   private lateinit var view: WeakReference<MovieListView>
@@ -39,13 +41,13 @@ class MovieListPresenter(
       onSuccess = { movies ->
         view.get()?.let {
           it.cancelRefreshDialog()
-          it.showMovies(movies)
+          it.showMovies(movieModelFactory.createMovieModels(movies))
         }
       }
     )
   }
 
-  fun onItemClick(movie: Movie) {
-    view.get()?.navigateToDetailScreen(movie.id)
+  fun onItemClick(movieModel: MovieModel) {
+    view.get()?.navigateToDetailScreen(movieModel.id)
   }
 }

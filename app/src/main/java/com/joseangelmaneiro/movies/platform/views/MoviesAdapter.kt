@@ -6,12 +6,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.joseangelmaneiro.movies.R
-import com.joseangelmaneiro.movies.domain.model.Movie
+import com.joseangelmaneiro.movies.presentation.model.MovieModel
 import com.squareup.picasso.Picasso
 
 class MoviesAdapter(
-  private val movies: List<Movie>,
-  private val listener: (Movie) -> Unit
+  private val movieModels: List<MovieModel>,
+  private val listener: (MovieModel) -> Unit
 ) : RecyclerView.Adapter<MoviesAdapter.MovieHolder>() {
 
   override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): MovieHolder {
@@ -25,11 +25,11 @@ class MoviesAdapter(
   }
 
   override fun onBindViewHolder(movieHolder: MovieHolder, position: Int) {
-    movieHolder.bind(movies[position])
+    movieHolder.bind(movieModels[position])
   }
 
   override fun getItemCount(): Int {
-    return movies.size
+    return movieModels.size
   }
 
   inner class MovieHolder(
@@ -42,15 +42,15 @@ class MoviesAdapter(
       itemView.setOnClickListener(this)
     }
 
-    fun bind(movie: Movie) {
+    fun bind(movieModel: MovieModel) {
       Picasso.with(imageView.context)
-        .load(movie.posterPath)
+        .load(movieModel.posterPath)
         .placeholder(R.drawable.movie_placeholder)
         .into(imageView)
     }
 
     override fun onClick(view: View) {
-      listener(movies[adapterPosition])
+      listener(movieModels[adapterPosition])
     }
   }
 }

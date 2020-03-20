@@ -8,10 +8,10 @@ import kotlinx.android.synthetic.main.activity_detail_movie.*
 import kotlinx.android.synthetic.main.content_detail_movie.*
 import android.content.Intent
 import android.app.Activity
-import com.joseangelmaneiro.movies.domain.model.Movie
 import com.joseangelmaneiro.movies.presentation.presenters.DetailMoviePresenter
 import com.joseangelmaneiro.movies.presentation.DetailMovieView
 import com.joseangelmaneiro.movies.presentation.formatters.Formatter
+import com.joseangelmaneiro.movies.presentation.model.MovieDetailModel
 import org.koin.android.ext.android.inject
 
 class DetailMovieActivity : BaseActivity(), DetailMovieView {
@@ -43,14 +43,14 @@ class DetailMovieActivity : BaseActivity(), DetailMovieView {
     }
   }
 
-  override fun displayMovie(movie: Movie) {
-    setUpActionBar(movie.title)
+  override fun displayMovieDetailModel(movieDetailModel: MovieDetailModel) {
+    setUpActionBar(movieDetailModel.title)
     Picasso.with(this)
-      .load(movie.backdropPath)
+      .load(movieDetailModel.backdropPath)
       .into(image_movie)
-    text_voteAverage.text = movie.voteAverage
-    text_releaseDate.text = formatter.formatDate(movie.releaseDate)
-    text_overview.text = movie.overview
+    text_voteAverage.text = movieDetailModel.voteAverage
+    text_releaseDate.text = formatter.formatDate(movieDetailModel.releaseDate)
+    text_overview.text = movieDetailModel.overview
   }
 
   private fun setUpActionBar(title: String) {

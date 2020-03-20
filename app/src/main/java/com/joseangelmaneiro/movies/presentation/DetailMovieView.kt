@@ -1,8 +1,8 @@
 package com.joseangelmaneiro.movies.presentation
 
-import com.joseangelmaneiro.movies.domain.model.Movie
+import com.joseangelmaneiro.movies.presentation.model.MovieDetailModel
 
 interface DetailMovieView : BaseView {
-  fun displayMovie(movie: Movie)
+  fun displayMovieDetailModel(movieDetailModel: MovieDetailModel)
   fun goToBack()
 }
