@@ -3,10 +3,8 @@ package com.joseangelmaneiro.movies.presentation.formatters
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.inject.Inject
 
-
-class Formatter @Inject constructor() {
+class Formatter {
 
   companion object {
 
@@ -31,5 +29,4 @@ class Formatter @Inject constructor() {
     val appDateFormat = SimpleDateFormat(APP_DATE_FORMAT, Locale.getDefault())
     return appDateFormat.format(date)
   }
-
 }

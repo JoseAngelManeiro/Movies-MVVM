@@ -9,8 +9,7 @@ import java.lang.ref.WeakReference
 class DetailMoviePresenter(
   private val executor: InteractorExecutor,
   private val getMovie: GetMovie,
-  private val formatter: Formatter,
-  private val movieId: Int
+  private val formatter: Formatter
 ) {
 
   private lateinit var view: WeakReference<DetailMovieView>
@@ -19,7 +18,7 @@ class DetailMoviePresenter(
     view = WeakReference(detailMovieView)
   }
 
-  fun viewReady() {
+  fun viewReady(movieId: Int) {
     executor(
       interactor = getMovie,
       request = GetMovie.Request(movieId),

@@ -1,11 +1,11 @@
 package com.joseangelmaneiro.movies.platform.views
 
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.joseangelmaneiro.movies.R
 import com.joseangelmaneiro.movies.presentation.BaseView
-import dagger.android.support.DaggerAppCompatActivity
 
-abstract class BaseActivity : DaggerAppCompatActivity(), BaseView {
+abstract class BaseActivity : AppCompatActivity(), BaseView {
 
   override fun showErrorMessage(message: String) {
     val builder = AlertDialog.Builder(
@@ -19,5 +19,4 @@ abstract class BaseActivity : DaggerAppCompatActivity(), BaseView {
     val dialog: AlertDialog = builder.create()
     dialog.show()
   }
-
 }
