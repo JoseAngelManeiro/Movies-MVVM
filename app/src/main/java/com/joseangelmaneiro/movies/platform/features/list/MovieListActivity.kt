@@ -1,6 +1,7 @@
 package com.joseangelmaneiro.movies.platform.features.list
 
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.Observer
 import com.joseangelmaneiro.movies.R
 import com.joseangelmaneiro.movies.platform.Status
@@ -40,9 +41,16 @@ class MovieListActivity : BaseActivity() {
   private fun setUpViewModel() {
     viewModel.movieModels.observe(this, Observer { moviesResource ->
       when (moviesResource.status) {
-        Status.LOADING -> {}
-        Status.ERROR -> showErrorMessage(moviesResource.exception?.message!!)
+        Status.LOADING -> {
+          if (!refreshLayout.isRefreshing)
+            progressBar.visibility = View.VISIBLE
+        }
+        Status.ERROR -> {
+          cancelLoadingViews()
+          showErrorMessage(moviesResource.exception?.message!!)
+        }
         Status.SUCCESS -> {
+          cancelLoadingViews()
           showMovies(moviesResource.data!!)
         }
       }
@@ -50,8 +58,12 @@ class MovieListActivity : BaseActivity() {
     viewModel.load()
   }
 
-  private fun showMovies(movieModels: List<MovieModel>) {
+  private fun cancelLoadingViews() {
+    progressBar.visibility = View.GONE
     refreshLayout.isRefreshing = false
+  }
+
+  private fun showMovies(movieModels: List<MovieModel>) {
     recyclerView.adapter =
       MoviesAdapter(movieModels = movieModels, listener = { onItemClick(it) })
   }
