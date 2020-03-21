@@ -1,4 +1,4 @@
-package com.joseangelmaneiro.movies.presentation.presenters
+package com.joseangelmaneiro.movies.platform.features.detail
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
@@ -7,9 +7,6 @@ import com.joseangelmaneiro.movies.domain.interactor.GetMovie
 import com.joseangelmaneiro.movies.domain.model.Movie
 import com.joseangelmaneiro.movies.platform.Resource
 import com.joseangelmaneiro.movies.platform.executor.SyncInteractorExecutor
-import com.joseangelmaneiro.movies.platform.features.detail.DetailMovieViewModel
-import com.joseangelmaneiro.movies.platform.features.detail.MovieDetailModelFactory
-import com.joseangelmaneiro.movies.platform.features.detail.MovieDetailModel
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify

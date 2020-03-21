@@ -16,27 +16,15 @@ class MoviesRepositoryImpl(
 ) : MoviesRepository {
 
   override fun getMovies(onlyOnline: Boolean): Either<Exception, List<Movie>> {
-    return if (onlyOnline) {
-      parseRemoteMovieEntities()
-    } else {
-      val localResponse = localDataSource.getMovies()
-      if (localResponse.isEmpty()) {
-        parseRemoteMovieEntities()
-      } else {
-        Either.right(movieMapper.transform(localResponse))
-      }
-    }
-  }
+    return object : PrefetchLocalData<List<MovieEntity>, List<Movie>>() {
+      override fun loadFromLocal() = movieMapper.transform(localDataSource.getMovies())
 
-  private fun parseRemoteMovieEntities(): Either<Exception, List<Movie>> {
-    return remoteDataSource.getMovies().fold(
-      {
-        Either.left(it)
-      },
-      {
-        saveData(it)
-        Either.right(movieMapper.transform(it))
-      })
+      override fun shouldFetch(data: List<Movie>?) = (onlyOnline || data.isNullOrEmpty())
+
+      override fun loadFromService() = remoteDataSource.getMovies()
+
+      override fun saveServiceResult(item: List<MovieEntity>) = saveData(item)
+    }.load()
   }
 
   private fun saveData(movieEntityList: List<MovieEntity>) {

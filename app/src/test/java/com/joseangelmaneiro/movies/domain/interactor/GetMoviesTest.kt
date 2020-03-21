@@ -1,7 +1,6 @@
-package com.joseangelmaneiro.movies.interactor
+package com.joseangelmaneiro.movies.domain.interactor
 
 import com.joseangelmaneiro.movies.domain.MoviesRepository
-import com.joseangelmaneiro.movies.domain.interactor.GetMovies
 import com.nhaarman.mockitokotlin2.verify
 import org.junit.Before
 import org.junit.Test
