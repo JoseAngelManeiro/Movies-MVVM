@@ -1,4 +1,4 @@
-package com.joseangelmaneiro.movies.platform.views
+package com.joseangelmaneiro.movies.platform.features.list
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,13 +6,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.joseangelmaneiro.movies.R
-import com.joseangelmaneiro.movies.presentation.MovieCellView
-import com.joseangelmaneiro.movies.presentation.presenters.MovieListPresenter
 import com.squareup.picasso.Picasso
 
-
 class MoviesAdapter(
-  private val presenter: MovieListPresenter
+  private val movieModels: List<MovieModel>,
+  private val listener: (MovieModel) -> Unit
 ) : RecyclerView.Adapter<MoviesAdapter.MovieHolder>() {
 
   override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): MovieHolder {
@@ -26,20 +24,16 @@ class MoviesAdapter(
   }
 
   override fun onBindViewHolder(movieHolder: MovieHolder, position: Int) {
-    presenter.configureCell(movieHolder, position)
+    movieHolder.bind(movieModels[position])
   }
 
   override fun getItemCount(): Int {
-    return presenter.getItemsCount()
+    return movieModels.size
   }
 
-  fun refreshData() {
-    notifyDataSetChanged()
-  }
-
-
-  inner class MovieHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    MovieCellView, View.OnClickListener {
+  inner class MovieHolder(
+    itemView: View
+  ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
     private val imageView = itemView.findViewById(R.id.image) as ImageView
 
@@ -47,17 +41,15 @@ class MoviesAdapter(
       itemView.setOnClickListener(this)
     }
 
-    override fun displayImage(url: String) {
+    fun bind(movieModel: MovieModel) {
       Picasso.with(imageView.context)
-        .load(url)
+        .load(movieModel.posterPath)
         .placeholder(R.drawable.movie_placeholder)
         .into(imageView)
     }
 
     override fun onClick(view: View) {
-      presenter.onItemClick(adapterPosition)
+      listener(movieModels[adapterPosition])
     }
-
   }
-
 }

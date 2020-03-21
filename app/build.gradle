@@ -37,6 +37,8 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
 
+    implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.viewModelVersion"
+
     implementation "org.koin:koin-android-viewmodel:$rootProject.koinVersion"
 
     testImplementation "org.mockito:mockito-core:$rootProject.mockitoVersion"
@@ -45,5 +47,6 @@ dependencies {
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$rootProject.mockitoKotlinVersion"
 
     testImplementation "junit:junit:$rootProject.jUnitVersion"
-    implementation "androidx.core:core-ktx:$rootProject.coreKtxVersion"
+
+    testImplementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"
 }

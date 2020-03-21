@@ -5,7 +5,7 @@
   android:id="@+id/coordinatorLayout"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".platform.views.MovieListActivity">
+  tools:context=".platform.features.list.MovieListActivity">
 
   <com.google.android.material.appbar.AppBarLayout
     android:id="@+id/appbarLayout"
@@ -32,7 +32,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <com.joseangelmaneiro.movies.platform.views.AutofitRecyclerView
+    <com.joseangelmaneiro.movies.platform.features.list.AutofitRecyclerView
       android:id="@+id/recyclerView"
       android:layout_width="match_parent"
       android:layout_height="match_parent"

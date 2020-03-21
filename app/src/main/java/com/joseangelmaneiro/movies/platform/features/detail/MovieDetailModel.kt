@@ -1,13 +1,10 @@
-package com.joseangelmaneiro.movies.domain.model
+package com.joseangelmaneiro.movies.platform.features.detail
 
 import java.util.*
 
-// Movie in the domain layer
-data class Movie(
-  val id: Int,
+data class MovieDetailModel(
   val voteAverage: String,
   val title: String,
-  val posterPath: String,
   val backdropPath: String?,
   val overview: String,
   val releaseDate: Date
