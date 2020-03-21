@@ -1,4 +1,4 @@
-package com.joseangelmaneiro.movies.presentation.model
+package com.joseangelmaneiro.movies.platform.features.detail
 
 import java.util.*
 

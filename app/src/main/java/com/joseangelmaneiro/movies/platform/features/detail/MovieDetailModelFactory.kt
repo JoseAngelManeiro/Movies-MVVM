@@ -1,7 +1,7 @@
-package com.joseangelmaneiro.movies.presentation
+package com.joseangelmaneiro.movies.platform.features.detail
 
 import com.joseangelmaneiro.movies.domain.model.Movie
-import com.joseangelmaneiro.movies.presentation.model.MovieDetailModel
+import com.joseangelmaneiro.movies.platform.features.detail.MovieDetailModel
 
 class MovieDetailModelFactory {
 

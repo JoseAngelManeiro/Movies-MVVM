@@ -19,7 +19,6 @@ buildscript {
 
 allprojects {
     repositories {
-        maven { url "https://jitpack.io" }
         google()
         jcenter()
     }
@@ -38,7 +37,7 @@ ext {
     mockitoVersion = '2.8.47'
     mockitoKotlinVersion = '2.0.0-RC1'
     jUnitVersion = '4.12'
-    coreKtxVersion = '1.2.0'
+    coreTestingVersion = '2.1.0'
 }
 
 task clean(type: Delete) {

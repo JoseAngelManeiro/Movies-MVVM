@@ -1,4 +1,4 @@
-package com.joseangelmaneiro.movies.platform.views
+package com.joseangelmaneiro.movies.platform.features.detail
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -8,15 +8,16 @@ import kotlinx.android.synthetic.main.activity_detail_movie.*
 import kotlinx.android.synthetic.main.content_detail_movie.*
 import android.content.Intent
 import android.app.Activity
-import com.joseangelmaneiro.movies.presentation.presenters.DetailMoviePresenter
-import com.joseangelmaneiro.movies.presentation.DetailMovieView
-import com.joseangelmaneiro.movies.presentation.formatters.Formatter
-import com.joseangelmaneiro.movies.presentation.model.MovieDetailModel
+import androidx.lifecycle.Observer
+import com.joseangelmaneiro.movies.platform.Formatter
+import com.joseangelmaneiro.movies.platform.Status
+import com.joseangelmaneiro.movies.platform.features.BaseActivity
 import org.koin.android.ext.android.inject
+import org.koin.android.viewmodel.ext.android.viewModel
 
-class DetailMovieActivity : BaseActivity(), DetailMovieView {
+class DetailMovieActivity : BaseActivity() {
 
-  private val presenter: DetailMoviePresenter by inject()
+  private val viewModel: DetailMovieViewModel by viewModel()
   private val formatter: Formatter by inject()
 
   companion object {
@@ -32,18 +33,26 @@ class DetailMovieActivity : BaseActivity(), DetailMovieView {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_detail_movie)
 
-    informPresenterViewIsReady()
+    setUpViewModel()
   }
 
-  private fun informPresenterViewIsReady() {
+  private fun setUpViewModel() {
     val movieId = intent.getIntExtra(EXTRA_MOVIE_ID, -1)
     if (movieId != -1) {
-      presenter.setView(this)
-      presenter.viewReady(movieId)
+      viewModel.movieDetailModel.observe(this, Observer { movieResource ->
+        when (movieResource.status) {
+          Status.LOADING -> {}
+          Status.ERROR -> showErrorMessage(movieResource.exception?.message!!)
+          Status.SUCCESS -> displayMovieDetailModel(movieResource.data!!)
+        }
+      })
+      viewModel.load(movieId)
+    } else {
+      throw RuntimeException("Data not sent to " + this::class.java.simpleName)
     }
   }
 
-  override fun displayMovieDetailModel(movieDetailModel: MovieDetailModel) {
+  private fun displayMovieDetailModel(movieDetailModel: MovieDetailModel) {
     setUpActionBar(movieDetailModel.title)
     Picasso.with(this)
       .load(movieDetailModel.backdropPath)
@@ -59,14 +68,10 @@ class DetailMovieActivity : BaseActivity(), DetailMovieView {
     setTitle(title)
   }
 
-  override fun goToBack() {
-    onBackPressed()
-  }
-
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     return when (item.itemId) {
       android.R.id.home -> {
-        presenter.navUpSelected()
+        onBackPressed()
         true
       }
       else -> super.onOptionsItemSelected(item)

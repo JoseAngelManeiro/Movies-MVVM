@@ -1,4 +1,4 @@
-package com.joseangelmaneiro.movies.platform.views
+package com.joseangelmaneiro.movies.platform.features.list
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.joseangelmaneiro.movies.R
-import com.joseangelmaneiro.movies.presentation.model.MovieModel
 import com.squareup.picasso.Picasso
 
 class MoviesAdapter(

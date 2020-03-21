@@ -1,4 +1,4 @@
-package com.joseangelmaneiro.movies.platform.views
+package com.joseangelmaneiro.movies.platform.features.list
 
 import android.content.Context
 import android.util.AttributeSet

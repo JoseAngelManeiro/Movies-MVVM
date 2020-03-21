@@ -1,7 +1,7 @@
 package com.joseangelmaneiro.movies.platform
 
 import android.app.Activity
-import com.joseangelmaneiro.movies.platform.views.DetailMovieActivity
+import com.joseangelmaneiro.movies.platform.features.detail.DetailMovieActivity
 
 fun Activity.navigateToDetail(movieId: Int) {
   DetailMovieActivity.launch(this, movieId)

@@ -1,4 +1,4 @@
-package com.joseangelmaneiro.movies.presentation.formatters
+package com.joseangelmaneiro.movies.platform
 
 import java.text.SimpleDateFormat
 import java.util.*

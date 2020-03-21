@@ -10,11 +10,11 @@ import com.joseangelmaneiro.movies.data.source.remote.MovieService
 import com.joseangelmaneiro.movies.data.source.remote.MoviesRemoteDataSource
 import com.joseangelmaneiro.movies.data.source.remote.MoviesRemoteDataSourceImpl
 import com.joseangelmaneiro.movies.domain.MoviesRepository
+import com.joseangelmaneiro.movies.platform.Formatter
 import com.joseangelmaneiro.movies.platform.executor.AsyncInteractorExecutor
 import com.joseangelmaneiro.movies.platform.executor.BackgroundRunner
 import com.joseangelmaneiro.movies.platform.executor.InteractorExecutor
 import com.joseangelmaneiro.movies.platform.executor.MainRunner
-import com.joseangelmaneiro.movies.presentation.formatters.Formatter
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
